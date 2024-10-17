@@ -6,7 +6,189 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ゲームスコアボード</title>
     <style>
-        /* CSSは省略 */
+        /* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* コンテナのスタイル */
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+}
+
+/* タイトルのスタイル */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 入力グループのスタイル */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.input-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.input-group button:hover {
+    background-color: #45a049;
+}
+
+/* スコアボードセレクタのスタイル */
+.scoreboard-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.scoreboard-selector select {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.scoreboard-selector button {
+    width: 25%;
+    padding: 10px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.scoreboard-selector button:hover {
+    background-color: #0b7dda;
+}
+
+/* スコアボード入力フォームのスタイル */
+#scoreInputForm {
+    margin-top: 20px;
+}
+
+#scoreInputForm h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#dataTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#dataTable th, #dataTable td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+#dataTable th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#dataTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#dataTable tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+#dataTable tbody td {
+    text-align: center;
+}
+
+#dataTable button {
+    background-color: #f44336;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#dataTable button:hover {
+    background-color: #e53935;
+}
+
+/* 編集フォームのスタイル */
+#editScoreForm {
+    margin-top: 20px;
+}
+
+#editScoreForm h2 {
+    text-align: center;
+    color: #333;
+}
+
+#editScoreForm .input-group button {
+    background-color: #FF9800;
+}
+
+#editScoreForm .input-group button:hover {
+    background-color: #fb8c00;
+}
+
+/* メディアクエリ（レスポンシブデザイン） */
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .scoreboard-selector select {
+        width: 60%;
+    }
+
+    .scoreboard-selector button {
+        width: 35%;
+    }
+}
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
