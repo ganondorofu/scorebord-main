@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゲームスコアボード</title>
+    <style>
+        /* CSSは省略 */
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadScoreboards();
+        });
+
+        function createScoreboard() {
+            const gameName = document.getElementById('gameName').value;
+            const scoreType = document.getElementById('scoreType').value;
+
+            if (gameName && scoreType) {
+                fetch('/stemask/create_scoreboard.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ gameName, scoreType })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert('スコアボードが作成されました！');
+                            loadScoreboards();
+                        } else {
+                            alert('スコアボードの作成に失敗しました: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('エラー:', error);
+                        alert('リクエストに失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
+                    });
+            } else {
+                alert('ゲーム名とスコアタイプを入力してください。');
+            }
+        }
+
+        function loadScoreboards() {
+            fetch('/stemask/get_scoreboards.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(scoreboards => {
+                    const scoreboardSelect = document.getElementById('scoreboardSelect');
+                    scoreboardSelect.innerHTML = '<option value="">スコアボードを選択</option>';
+
+                    scoreboards.forEach(scoreboard => {
+                        const option = document.createElement('option');
+                        option.value = scoreboard.id;
+                        option.textContent = `${scoreboard.game_name} - スコアタイプ: ${scoreboard.score_type}`;
+                        scoreboardSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                    alert('スコアボードの読み込みに失敗しました。サーバーとの接続を確認してください。');
+                });
+        }
+
+        function openSelectedScoreboard() {
+            const scoreboardSelect = document.getElementById('scoreboardSelect');
+            const selectedScoreboardId = scoreboardSelect.value;
+            if (selectedScoreboardId) {
+                const selectedOption = scoreboardSelect.options[scoreboardSelect.selectedIndex];
+                const gameName = selectedOption.textContent.split(' - ')[0];
+                const scoreType = selectedOption.textContent.split(': ')[1];
+                showScoreInputForm(selectedScoreboardId, gameName, scoreType);
+            } else {
+                alert('スコアボードを選択してください。');
+            }
+        }
+
+        function showScoreInputForm(scoreboardId, gameName, scoreType) {
+            document.getElementById('gameTitle').textContent = gameName;
+            document.getElementById('scoreInputForm').style.display = 'block';
+
+            const scoreInput = document.getElementById('score');
+            if (scoreType === 'time') {
+                scoreInput.type = 'text';
+                scoreInput.placeholder = '分:秒 または 秒';
+            } else {
+                scoreInput.type = 'number';
+                scoreInput.step = 'any';
+                scoreInput.placeholder = '数値（小数可）';
+            }
+
+            document.getElementById('submitScore').onclick = () => {
+                const name = document.getElementById('name').value;
+                const score = scoreInput.value;
+
+                if (name && score) {
+                    let scoreValue;
+                    if (scoreType === 'time') {
+                        scoreValue = convertTimeToSeconds(score);
+                    } else {
+                        scoreValue = parseFloat(score);
+                    }
+
+                    if (isNaN(scoreValue)) {
+                        alert('無効なスコア形式です。');
+                        return;
+                    }
+
+                    fetch('/stemask/add_score.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ scoreboardId, name, score: scoreValue })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                alert('スコアが追加されました！');
+                                loadScores(scoreboardId, scoreType);
+                            } else {
+                                alert('スコアの追加に失敗しました: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('エラー:', error);
+                            alert('スコア追加に失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
+                        });
+                } else {
+                    alert("名前とスコアの両方を入力してください。");
+                }
+            };
+
+            loadScores(scoreboardId, scoreType);
+        }
+
+        function convertTimeToSeconds(timeString) {
+            if (timeString.includes(':')) {
+                const [minutes, seconds] = timeString.split(':').map(Number);
+                return minutes * 60 + seconds;
+            } else {
+                return parseFloat(timeString);
+            }
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = (seconds % 60).toFixed(2);
+            return `${minutes}:${remainingSeconds.padStart(5, '0')}`;
+        }
+
+        function loadScores(scoreboardId, scoreType) {
+            fetch(`/stemask/get_scores.php?scoreboardId=${scoreboardId}`)
+                .then(response => response.json())
+                .then(scores => {
+                    const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = '';
+
+                    scores.forEach((row, index) => {
+                        let newRow = tableBody.insertRow();
+                        let rankCell = newRow.insertCell(0);
+                        let nameCell = newRow.insertCell(1);
+                        let scoreCell = newRow.insertCell(2);
+                        let actionCell = newRow.insertCell(3);
+
+                        rankCell.textContent = index + 1;
+                        nameCell.textContent = row.nickname;
+                        scoreCell.textContent = scoreType === 'time' ? formatTime(row.score) : row.score;
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = '編集';
+                        editButton.onclick = () => {
+                            showEditScoreForm(row.id, row.nickname, row.score, scoreboardId, scoreType);
+                        };
+                        actionCell.appendChild(editButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = '削除';
+                        deleteButton.onclick = () => {
+                            deleteScore(row.id, scoreboardId, scoreType);
+                        };
+                        actionCell.appendChild(deleteButton);
+                    });
+                })
+                .catch(error => {
+                    console.error('エラー:', error);
+                    alert('スコアの読み込みに失敗しました。サーバーとの接続を確認してください。');
+                });
+        }
+
+        function showEditScoreForm(scoreId, nickname, currentScore, scoreboardId, scoreType) {
+            document.getElementById('editName').value = nickname;
+            const editScoreInput = document.getElementById('editScore');
+            
+            if (scoreType === 'time') {
+                editScoreInput.type = 'text';
+                editScoreInput.value = formatTime(currentScore);
+            } else {
+                editScoreInput.type = 'number';
+                editScoreInput.step = 'any';
+                editScoreInput.value = currentScore;
+            }
+
+            document.getElementById('editScoreForm').style.display = 'block';
+
+            document.getElementById('submitEditScore').onclick = () => {
+                const newNickname = document.getElementById('editName').value;
+                const newScore = editScoreInput.value;
+
+                if (newNickname && newScore) {
+                    let scoreValue;
+                    if (scoreType === 'time') {
+                        scoreValue = convertTimeToSeconds(newScore);
+                    } else {
+                        scoreValue = parseFloat(newScore);
+                    }
+
+                    if (isNaN(scoreValue)) {
+                        alert('無効なスコア形式です。');
+                        return;
+                    }
+
+                    fetch('/stemask/edit_score.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ scoreId, newNickname, newScore: scoreValue })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                alert('スコアが編集されました！');
+                                document.getElementById('editScoreForm').style.display = 'none';
+                                loadScores(scoreboardId, scoreType);
+                            } else {
+                                alert('スコアの編集に失敗しました: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('エラー:', error);
+                            alert('スコアの編集に失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
+                        });
+                } else {
+                    alert("名前とスコアの両方を入力してください。");
+                }
+            };
+        }
+
+        function deleteScore(scoreId, scoreboardId, scoreType) {
+            if (confirm('このスコアを削除してもよろしいですか？')) {
+                fetch('/stemask/delete_score.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ scoreId })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert('スコアが削除されました！');
+                            loadScores(scoreboardId, scoreType);
+                        } else {
+                            alert('スコアの削除に失敗しました: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('エラー:', error);
+                        alert('スコア削除に失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
+                    });
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>ゲームスコアボード管理</h1>
+
+        <div class="input-group">
+            <label for="gameName">ゲーム名:</label>
+            <input type="text" id="gameName" name="gameName" required>
+
+            <label for="scoreType">スコアタイプ:</label>
+            <select id="scoreType" name="scoreType" required>
+                <option value="number">数値</option>
+                <option value="time">時間 (分:秒)</option>
+            </select>
+
+            <button type="button" onclick="createScoreboard()">作成</button>
+        </div>
+
+        <div class="scoreboard-selector">
+            <select id="scoreboardSelect">
+                <option value="">スコアボードを選択</option>
+            </select>
+            <button id="openScoreboard" onclick="openSelectedScoreboard()">開く</button>
+        </div>
+
+        <div id="scoreInputForm" style="display:none;">
+            <h2>スコアボード - <span id="gameTitle"></span></h2>
+
+            <div class="input-group">
+                <label for="name">ニックネーム:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="score">スコア:</label>
+                <input type="number" id="score" name="score" step="any">
+
+                <button id="submitScore">送信</button>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>ニックネーム</th>
+                        <th>スコア</th>
+                        <th>アクション</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- スコアがここに追加されます -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="editScoreForm" style="display:none;">
+            <h2>スコア編集</h2>
+            <div class="input-group">
+                <label for="editName">ニックネーム:</label>
+                <input type="text" id="editName" name="editName">
+
+                <label for="editScore">スコア:</label>
+                <input type="number" id="editScore" name="editScore" step="any">
+
+                <button id="submitEditScore">更新</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
