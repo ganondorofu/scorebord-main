@@ -13,10 +13,12 @@ if ($conn->connect_error) {
     die("接続失敗: " . $conn->connect_error);
 }
 
-$scoreboardId = $_GET['scoreboardId'];
+// パラメータの取得と検証
+$scoreboardId = isset($_GET['scoreboardId']) ? intval($_GET['scoreboardId']) : 0;
+$sortOrder = isset($_GET['sortOrder']) && strtoupper($_GET['sortOrder']) === 'ASC' ? 'ASC' : 'DESC';
 
 // スコア取得クエリ
-$sql = "SELECT id, nickname, score FROM scores WHERE scoreboard_id = ?";
+$sql = "SELECT id, nickname, score FROM scores WHERE scoreboard_id = ? ORDER BY score $sortOrder";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $scoreboardId);
 $stmt->execute();
