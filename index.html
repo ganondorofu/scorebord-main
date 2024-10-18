@@ -348,6 +348,15 @@
         <div id="scoreInputForm" style="display:none;">
             <h2>スコアボード - <span id="gameTitle"></span></h2>
 
+            <!-- 追加: ソート順序選択 -->
+            <div class="input-group">
+                <label for="sortOrder">スコア順序:</label>
+                <select id="sortOrder">
+                    <option value="DESC">降順 (高い順)</option>
+                    <option value="ASC">昇順 (低い順)</option>
+                </select>
+            </div>
+
             <div class="input-group">
                 <label for="name">ニックネーム:</label>
                 <input type="text" id="name" name="name">
@@ -372,20 +381,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- 編集フォームを削除 -->
-        <!-- <div id="editScoreForm" style="display:none;">
-            <h2>スコア編集</h2>
-            <div class="input-group">
-                <label for="editName">ニックネーム:</label>
-                <input type="text" id="editName" name="editName">
-
-                <label for="editScore">スコア:</label>
-                <input type="number" id="editScore" name="editScore" step="any">
-
-                <button id="submitEditScore">更新</button>
-            </div>
-        </div> -->
     </div>
 
     <script>
@@ -395,6 +390,7 @@
 
         let currentScoreboardId = null;
         let currentScoreType = null;
+        let currentSortOrder = 'DESC'; // デフォルトは降順
         let currentEditScoreId = null;
 
         function loadScoreboards() {
@@ -452,6 +448,17 @@
                 scoreInput.placeholder = '数値（小数可）';
             }
 
+            // ソート順序セレクタのリセット
+            const sortOrderSelect = document.getElementById('sortOrder');
+            sortOrderSelect.value = 'DESC';
+            currentSortOrder = 'DESC';
+
+            // ソート順序が変更されたときにスコアを再読み込み
+            sortOrderSelect.onchange = function () {
+                currentSortOrder = this.value;
+                loadScores(scoreboardId, scoreType, currentSortOrder);
+            };
+
             document.getElementById('submitScore').onclick = () => {
                 const name = document.getElementById('name').value;
                 const score = scoreInput.value;
@@ -485,7 +492,7 @@
                         .then(data => {
                             if (data.success) {
                                 alert('スコアが追加されました！');
-                                loadScores(scoreboardId, scoreType);
+                                loadScores(scoreboardId, scoreType, currentSortOrder);
                                 document.getElementById('name').value = '';
                                 document.getElementById('score').value = '';
                             } else {
@@ -501,7 +508,7 @@
                 }
             };
 
-            loadScores(scoreboardId, scoreType);
+            loadScores(scoreboardId, scoreType, currentSortOrder);
         }
 
         function convertTimeToSeconds(timeString) {
@@ -519,8 +526,8 @@
             return `${minutes}:${remainingSeconds.padStart(5, '0')}`;
         }
 
-        function loadScores(scoreboardId, scoreType) {
-            fetch(`/stemask/get_scores.php?scoreboardId=${scoreboardId}`)
+        function loadScores(scoreboardId, scoreType, sortOrder = 'DESC') {
+            fetch(`/stemask/get_scores.php?scoreboardId=${scoreboardId}&sortOrder=${sortOrder}`)
                 .then(response => response.json())
                 .then(scores => {
                     const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
@@ -627,7 +634,7 @@
                             if (data.success) {
                                 alert('スコアが編集されました！');
                                 editModal.style.display = "none";
-                                loadScores(scoreboardId, scoreType);
+                                loadScores(scoreboardId, scoreType, currentSortOrder);
                             } else {
                                 alert('スコアの編集に失敗しました: ' + data.error);
                             }
@@ -660,7 +667,7 @@
                     .then(data => {
                         if (data.success) {
                             alert('スコアが削除されました！');
-                            loadScores(scoreboardId, scoreType);
+                            loadScores(scoreboardId, scoreType, currentSortOrder);
                         } else {
                             alert('スコアの削除に失敗しました: ' + data.error);
                         }
