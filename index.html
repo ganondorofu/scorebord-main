@@ -7,228 +7,395 @@
     <title>ゲームスコアボード</title>
     <style>
         /* 全体のスタイル */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-/* コンテナのスタイル */
-.container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 600px;
-}
+        /* コンテナのスタイル */
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
 
-/* タイトルのスタイル */
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
+        /* タイトルのスタイル */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-/* 入力グループのスタイル */
-.input-group {
-    margin-bottom: 20px;
-}
+        /* 入力グループのスタイル */
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-.input-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #555;
-}
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
 
-.input-group input, .input-group select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
 
-.input-group button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
+        .input-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-.input-group button:hover {
-    background-color: #45a049;
-}
+        .input-group button:hover {
+            background-color: #45a049;
+        }
 
-/* スコアボードセレクタのスタイル */
-.scoreboard-selector {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        /* スコアボードセレクタのスタイル */
+        .scoreboard-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.scoreboard-selector select {
-    width: 70%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
+        .scoreboard-selector select {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
 
-.scoreboard-selector button {
-    width: 25%;
-    padding: 10px;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
+        .scoreboard-selector button {
+            width: 25%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-.scoreboard-selector button:hover {
-    background-color: #0b7dda;
-}
+        .scoreboard-selector button:hover {
+            background-color: #0b7dda;
+        }
 
-/* スコアボード入力フォームのスタイル */
-#scoreInputForm {
-    margin-top: 20px;
-}
+        /* スコアボード入力フォームのスタイル */
+        #scoreInputForm {
+            margin-top: 20px;
+        }
 
-#scoreInputForm h2 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-}
+        #scoreInputForm h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
 
-#dataTable {
-    width: 100%;
-    border-collapse: collapse;
-}
+        #dataTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-#dataTable th, #dataTable td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
-}
+        #dataTable th,
+        #dataTable td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-#dataTable th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
+        #dataTable th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
 
-#dataTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+        #dataTable tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-#dataTable tbody tr:hover {
-    background-color: #f1f1f1;
-}
+        #dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
 
-#dataTable tbody td {
-    text-align: center;
-}
+        #dataTable tbody td {
+            text-align: center;
+        }
 
-#dataTable button {
-    background-color: #f44336;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
+        #dataTable button {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 0 2px;
+        }
 
-#dataTable button:hover {
-    background-color: #e53935;
-}
+        #dataTable button:hover {
+            background-color: #e53935;
+        }
 
-/* 編集フォームのスタイル */
-#editScoreForm {
-    margin-top: 20px;
-}
+        /* 編集フォームのスタイル（削除） */
+        /* #editScoreForm {
+            margin-top: 20px;
+        }
 
-#editScoreForm h2 {
-    text-align: center;
-    color: #333;
-}
+        #editScoreForm h2 {
+            text-align: center;
+            color: #333;
+        }
 
-#editScoreForm .input-group button {
-    background-color: #FF9800;
-}
+        #editScoreForm .input-group button {
+            background-color: #FF9800;
+        }
 
-#editScoreForm .input-group button:hover {
-    background-color: #fb8c00;
-}
+        #editScoreForm .input-group button:hover {
+            background-color: #fb8c00;
+        } */
 
-/* メディアクエリ（レスポンシブデザイン） */
-@media (max-width: 600px) {
-    .container {
-        width: 100%;
-        padding: 15px;
-    }
+        /* メディアクエリ（レスポンシブデザイン） */
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
 
-    .scoreboard-selector select {
-        width: 60%;
-    }
+            .scoreboard-selector select {
+                width: 60%;
+            }
 
-    .scoreboard-selector button {
-        width: 35%;
-    }
-}
+            .scoreboard-selector button {
+                width: 35%;
+            }
+        }
 
+        /* 新規作成ボタンのスタイル */
+        .create-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .create-button:hover {
+            background-color: #45a049;
+        }
+
+        /* モーダルのスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* 編集モーダルのスタイル */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            z-index: 3;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .edit-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .edit-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .edit-close:hover,
+        .edit-close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        .edit-input-group button {
+            background-color: #FF9800;
+        }
+
+        .edit-input-group button:hover {
+            background-color: #fb8c00;
+        }
     </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>ゲームスコアボード管理</h1>
+
+        <button id="createButton" class="create-button">新規作成＋</button>
+
+        <!-- 新規スコアボード作成モーダル -->
+        <div id="createModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>新規スコアボード作成</h2>
+                <div class="input-group">
+                    <label for="gameName">ゲーム名:</label>
+                    <input type="text" id="gameName" name="gameName" required>
+
+                    <label for="scoreType">スコアタイプ:</label>
+                    <select id="scoreType" name="scoreType" required>
+                        <option value="number">数値</option>
+                        <option value="time">時間 (分:秒)</option>
+                    </select>
+
+                    <button type="button" onclick="createScoreboard()">作成</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 編集スコアモーダル -->
+        <div id="editModal" class="edit-modal">
+            <div class="edit-modal-content">
+                <span class="edit-close">&times;</span>
+                <h2>スコア編集</h2>
+                <div class="input-group">
+                    <label for="editName">ニックネーム:</label>
+                    <input type="text" id="editName" name="editName">
+
+                    <label for="editScore">スコア:</label>
+                    <input type="text" id="editScore" name="editScore">
+
+                    <button id="submitEditScore">更新</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scoreboard-selector">
+            <select id="scoreboardSelect">
+                <option value="">スコアボードを選択</option>
+            </select>
+            <button id="openScoreboard" onclick="openSelectedScoreboard()">開く</button>
+        </div>
+
+        <div id="scoreInputForm" style="display:none;">
+            <h2>スコアボード - <span id="gameTitle"></span></h2>
+
+            <div class="input-group">
+                <label for="name">ニックネーム:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="score">スコア:</label>
+                <input type="number" id="score" name="score" step="any">
+
+                <button id="submitScore">送信</button>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>ニックネーム</th>
+                        <th>スコア</th>
+                        <th>アクション</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- スコアがここに追加されます -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 編集フォームを削除 -->
+        <!-- <div id="editScoreForm" style="display:none;">
+            <h2>スコア編集</h2>
+            <div class="input-group">
+                <label for="editName">ニックネーム:</label>
+                <input type="text" id="editName" name="editName">
+
+                <label for="editScore">スコア:</label>
+                <input type="number" id="editScore" name="editScore" step="any">
+
+                <button id="submitEditScore">更新</button>
+            </div>
+        </div> -->
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             loadScoreboards();
         });
 
-        function createScoreboard() {
-            const gameName = document.getElementById('gameName').value;
-            const scoreType = document.getElementById('scoreType').value;
-
-            if (gameName && scoreType) {
-                fetch('/stemask/create_scoreboard.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ gameName, scoreType })
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            alert('スコアボードが作成されました！');
-                            loadScoreboards();
-                        } else {
-                            alert('スコアボードの作成に失敗しました: ' + data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('エラー:', error);
-                        alert('リクエストに失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
-                    });
-            } else {
-                alert('ゲーム名とスコアタイプを入力してください。');
-            }
-        }
+        let currentScoreboardId = null;
+        let currentScoreType = null;
+        let currentEditScoreId = null;
 
         function loadScoreboards() {
             fetch('/stemask/get_scoreboards.php')
@@ -269,6 +436,9 @@ h1 {
         }
 
         function showScoreInputForm(scoreboardId, gameName, scoreType) {
+            currentScoreboardId = scoreboardId;
+            currentScoreType = scoreType;
+
             document.getElementById('gameTitle').textContent = gameName;
             document.getElementById('scoreInputForm').style.display = 'block';
 
@@ -304,7 +474,7 @@ h1 {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ scoreboardId, name, score: scoreValue })
+                        body: JSON.stringify({ scoreboardId: scoreboardId, name, score: scoreValue })
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -316,6 +486,8 @@ h1 {
                             if (data.success) {
                                 alert('スコアが追加されました！');
                                 loadScores(scoreboardId, scoreType);
+                                document.getElementById('name').value = '';
+                                document.getElementById('score').value = '';
                             } else {
                                 alert('スコアの追加に失敗しました: ' + data.error);
                             }
@@ -367,8 +539,9 @@ h1 {
 
                         const editButton = document.createElement('button');
                         editButton.textContent = '編集';
+                        editButton.style.backgroundColor = '#FF9800';
                         editButton.onclick = () => {
-                            showEditScoreForm(row.id, row.nickname, row.score, scoreboardId, scoreType);
+                            showEditScoreModal(row.id, row.nickname, row.score, scoreboardId, scoreType);
                         };
                         actionCell.appendChild(editButton);
 
@@ -386,10 +559,16 @@ h1 {
                 });
         }
 
-        function showEditScoreForm(scoreId, nickname, currentScore, scoreboardId, scoreType) {
-            document.getElementById('editName').value = nickname;
+        function showEditScoreModal(scoreId, nickname, currentScore, scoreboardId, scoreType) {
+            currentEditScoreId = scoreId;
+
+            const editModal = document.getElementById("editModal");
+            const editClose = document.getElementsByClassName("edit-close")[0];
+            const editNameInput = document.getElementById('editName');
             const editScoreInput = document.getElementById('editScore');
-            
+
+            editNameInput.value = nickname;
+
             if (scoreType === 'time') {
                 editScoreInput.type = 'text';
                 editScoreInput.value = formatTime(currentScore);
@@ -399,10 +578,23 @@ h1 {
                 editScoreInput.value = currentScore;
             }
 
-            document.getElementById('editScoreForm').style.display = 'block';
+            editModal.style.display = "block";
 
+            // 閉じるボタンのイベント
+            editClose.onclick = function () {
+                editModal.style.display = "none";
+            }
+
+            // モーダル外をクリックした場合のイベント
+            window.onclick = function (event) {
+                if (event.target == editModal) {
+                    editModal.style.display = "none";
+                }
+            }
+
+            // 更新ボタンのイベント
             document.getElementById('submitEditScore').onclick = () => {
-                const newNickname = document.getElementById('editName').value;
+                const newNickname = editNameInput.value;
                 const newScore = editScoreInput.value;
 
                 if (newNickname && newScore) {
@@ -423,7 +615,7 @@ h1 {
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ scoreId, newNickname, newScore: scoreValue })
+                        body: JSON.stringify({ scoreId: scoreId, newNickname, newScore: scoreValue })
                     })
                         .then(response => {
                             if (!response.ok) {
@@ -434,7 +626,7 @@ h1 {
                         .then(data => {
                             if (data.success) {
                                 alert('スコアが編集されました！');
-                                document.getElementById('editScoreForm').style.display = 'none';
+                                editModal.style.display = "none";
                                 loadScores(scoreboardId, scoreType);
                             } else {
                                 alert('スコアの編集に失敗しました: ' + data.error);
@@ -479,74 +671,64 @@ h1 {
                     });
             }
         }
+
+        // モーダル関連のJavaScript（新規作成）
+        const createModal = document.getElementById("createModal");
+        const createBtn = document.getElementById("createButton");
+        const createClose = document.getElementsByClassName("close")[0];
+
+        createBtn.onclick = function () {
+            createModal.style.display = "block";
+        }
+
+        createClose.onclick = function () {
+            createModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == createModal) {
+                createModal.style.display = "none";
+            }
+        }
+
+        function createScoreboard() {
+            const gameName = document.getElementById('gameName').value;
+            const scoreType = document.getElementById('scoreType').value;
+
+            if (gameName && scoreType) {
+                fetch('/stemask/create_scoreboard.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ gameName, scoreType })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert('スコアボードが作成されました！');
+                            loadScoreboards();
+                            createModal.style.display = "none";  // モーダルを閉じる
+                            document.getElementById('gameName').value = '';
+                            document.getElementById('scoreType').value = 'number';
+                        } else {
+                            alert('スコアボードの作成に失敗しました: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('エラー:', error);
+                        alert('リクエストに失敗しました。サーバーのURLやPHPファイルの配置を確認してください。');
+                    });
+            } else {
+                alert('ゲーム名とスコアタイプを入力してください。');
+            }
+        }
     </script>
-</head>
-
-<body>
-    <div class="container">
-        <h1>ゲームスコアボード管理</h1>
-
-        <div class="input-group">
-            <label for="gameName">ゲーム名:</label>
-            <input type="text" id="gameName" name="gameName" required>
-
-            <label for="scoreType">スコアタイプ:</label>
-            <select id="scoreType" name="scoreType" required>
-                <option value="number">数値</option>
-                <option value="time">時間 (分:秒)</option>
-            </select>
-
-            <button type="button" onclick="createScoreboard()">作成</button>
-        </div>
-
-        <div class="scoreboard-selector">
-            <select id="scoreboardSelect">
-                <option value="">スコアボードを選択</option>
-            </select>
-            <button id="openScoreboard" onclick="openSelectedScoreboard()">開く</button>
-        </div>
-
-        <div id="scoreInputForm" style="display:none;">
-            <h2>スコアボード - <span id="gameTitle"></span></h2>
-
-            <div class="input-group">
-                <label for="name">ニックネーム:</label>
-                <input type="text" id="name" name="name">
-
-                <label for="score">スコア:</label>
-                <input type="number" id="score" name="score" step="any">
-
-                <button id="submitScore">送信</button>
-            </div>
-
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>順位</th>
-                        <th>ニックネーム</th>
-                        <th>スコア</th>
-                        <th>アクション</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- スコアがここに追加されます -->
-                </tbody>
-            </table>
-        </div>
-
-        <div id="editScoreForm" style="display:none;">
-            <h2>スコア編集</h2>
-            <div class="input-group">
-                <label for="editName">ニックネーム:</label>
-                <input type="text" id="editName" name="editName">
-
-                <label for="editScore">スコア:</label>
-                <input type="number" id="editScore" name="editScore" step="any">
-
-                <button id="submitEditScore">更新</button>
-            </div>
-        </div>
-    </div>
 </body>
 
 </html>

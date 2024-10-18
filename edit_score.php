@@ -19,14 +19,15 @@ $data = json_decode(file_get_contents('php://input'), true);
 if (isset($data['scoreId']) && isset($data['newNickname']) && isset($data['newScore'])) {
     $scoreId = $data['scoreId'];
     $newNickname = $data['newNickname'];
-    $newScore = $data['newScore'];
+    $newScore = floatval($data['newScore']);  // 修正: スコアを浮動小数点に変換
 
     // スコア編集クエリ
     $sql = "UPDATE scores SET nickname = ?, score = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     
     if ($stmt) {
-        $stmt->bind_param('sii', $newNickname, $newScore, $scoreId);
+        // スコアを浮動小数点として処理
+        $stmt->bind_param('sdi', $newNickname, $newScore, $scoreId);
 
         if ($stmt->execute()) {
             echo json_encode(["success" => true]);
