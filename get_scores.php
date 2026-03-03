@@ -1,17 +1,7 @@
 <?php
 // データベース接続情報
-$servername = "localhost";
-$username = "***REMOVED_DB_USER***";
-$password = "***REMOVED_DB_PASSWORD***";
-$dbname = "***REMOVED_DB_NAME***";
+require_once 'db_connection.php';
 
-// DB接続
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 接続確認
-if ($conn->connect_error) {
-    die("接続失敗: " . $conn->connect_error);
-}
 
 // パラメータの取得と検証
 $scoreboardId = isset($_GET['scoreboardId']) ? intval($_GET['scoreboardId']) : 0;

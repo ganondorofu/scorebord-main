@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";  // データベースサーバーのホスト名 (一般的にlocalhost)
-$username = "***REMOVED_DB_USER***";  // データベースのユーザー名
-$password = "***REMOVED_DB_PASSWORD***";  // データベースのパスワード
-$dbname = "***REMOVED_DB_NAME***";    // 使用するデータベースの名前
+$servername = getenv('DB_HOST') ?: "localhost";
+$username = getenv('DB_USER') ?: "";
+$password = getenv('DB_PASSWORD') ?: "";
+$dbname = getenv('DB_NAME') ?: "";
 
 // データベース接続の作成
 $conn = new mysqli($servername, $username, $password, $dbname);

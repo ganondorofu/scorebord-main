@@ -2,17 +2,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$servername = "localhost";
-$username = "***REMOVED_DB_USER***"; // データベースユーザー名
-$password = "***REMOVED_DB_PASSWORD***"; // パスワード
-$dbname = "***REMOVED_DB_NAME***"; // データベース名
+require_once 'db_connection.php';
 
-// データベース接続
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 接続確認
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "error" => "データベース接続エラー: " . $conn->connect_error]);
     exit();
 }
 
